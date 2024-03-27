@@ -12,8 +12,8 @@ using RepositoryLayer.Data;
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240327162510_InitialUserWalletDB")]
-    partial class InitialUserWalletDB
+    [Migration("20240327192257_InitialUserWalletDb")]
+    partial class InitialUserWalletDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,16 +37,20 @@ namespace RepositoryLayer.Migrations
                     b.Property<DateTime>("DateOfTransfer")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RecipientUserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RecipientUserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("SenderUserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SenderUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("WalletId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipientUserId");
+
+                    b.HasIndex("SenderUserId");
 
                     b.HasIndex("WalletId");
 
@@ -75,12 +79,7 @@ namespace RepositoryLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("WalletId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WalletId");
 
                     b.ToTable("Users");
                 });
@@ -94,27 +93,55 @@ namespace RepositoryLayer.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Transaction", b =>
                 {
+                    b.HasOne("EntityLayer.Models.User", "RecipientUser")
+                        .WithMany()
+                        .HasForeignKey("RecipientUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Models.User", "SenderUser")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EntityLayer.Models.Wallet", null)
                         .WithMany("Transactions")
                         .HasForeignKey("WalletId");
+
+                    b.Navigation("RecipientUser");
+
+                    b.Navigation("SenderUser");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.Wallet", b =>
+                {
+                    b.HasOne("EntityLayer.Models.User", "User")
+                        .WithOne("Wallet")
+                        .HasForeignKey("EntityLayer.Models.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.User", b =>
                 {
-                    b.HasOne("EntityLayer.Models.Wallet", "Wallet")
-                        .WithMany()
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Navigation("Wallet")
                         .IsRequired();
-
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Wallet", b =>

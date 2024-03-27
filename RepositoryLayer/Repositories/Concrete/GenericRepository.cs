@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Data;
-using RepositoryLayer.Repository.Abstract;
+using RepositoryLayer.Repositories.Abstract;
 
 namespace RepositoryLayer.Repository.Concrete
 {
@@ -31,7 +31,7 @@ namespace RepositoryLayer.Repository.Concrete
             return _dbSet.AsNoTracking().AsQueryable();
         }
 
-        public async Task<T> GetEntityByIdAsync(int id)
+        public async Task<T> GetEntityByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }

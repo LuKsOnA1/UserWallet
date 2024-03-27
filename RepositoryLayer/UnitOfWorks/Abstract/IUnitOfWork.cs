@@ -1,6 +1,6 @@
-﻿using RepositoryLayer.Repository.Abstract;
+﻿using RepositoryLayer.Repositories.Abstract;
 
-namespace RepositoryLayer.UnitOfWork.Abstract
+namespace RepositoryLayer.UnitOfWorks.Abstract
 {
     public interface IUnitOfWork
     {
