@@ -1,23 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EntityLayer.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace EntityLayer.Models
+namespace EntityLayer.DTOs
 {
-    public class Transaction
+    public class TransferMoneyDTO
     {
-        public Guid Id { get; set; }
-
-
         [Required]
         public Guid SenderUserId { get; set; }
         [ForeignKey("SenderUserId")]
-        public User SenderUser { get; set; }
 
 
         [Required]
         public Guid RecipientUserId { get; set; }
         [ForeignKey("RecipientUserId")]
-        public User RecipientUser { get; set; }
 
 
         public Guid WalletId { get; set; }

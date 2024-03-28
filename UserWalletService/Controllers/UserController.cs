@@ -105,7 +105,7 @@ namespace UserWalletService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> TransferMoney(Guid senderId, Guid recipientId, [FromBody] decimal amount)
+        public async Task<ActionResult<TransferMoneyDTO>> TransferMoney(Guid senderId, Guid recipientId, [FromBody] decimal amount)
         {
 
 
@@ -133,14 +133,24 @@ namespace UserWalletService.Controllers
                 SenderUserId = senderUserId.Id,
                 RecipientUserId = recipientUserId.Id,
                 Amount = amount,
-                DateOfTransfer = DateTime.UtcNow,
+                DateOfTransfer = DateTime.Now,
+                WalletId = senderUserId.Wallet.Id
                 
+            };
+
+            var finalTransactionDTO = new TransferMoneyDTO
+            {
+                SenderUserId = transaction.SenderUserId,
+                RecipientUserId = transaction.RecipientUserId,
+                Amount = transaction.Amount,
+                DateOfTransfer = transaction.DateOfTransfer,
+                WalletId = transaction.WalletId
             };
 
             await _unitOfWork.GetGenericRepository<Transaction>().AddEntityAsync(transaction);
             await _unitOfWork.CommitAsync();
 
-            return Ok(transaction);
+            return Ok(finalTransactionDTO);
         }
 
     }
