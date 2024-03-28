@@ -99,5 +99,49 @@ namespace UserWalletService.Controllers
         }
 
 
+
+
+        [HttpPost("{senderId}/Transfer/{recipientId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> TransferMoney(Guid senderId, Guid recipientId, [FromBody] decimal amount)
+        {
+
+
+            var senderUserId = await _repository.GetIncludeAsync(filter: x => x.Id == senderId, includeProperties: "Wallet,Wallet.Transactions");
+            var senderWalletId = senderUserId.Wallet.Id;
+
+            var recipientUserId = await _repository.GetIncludeAsync(filter: x => x.Id == recipientId, includeProperties: "Wallet,Wallet.Transactions");
+            var recipientWalletId = recipientUserId.Wallet.Id;
+
+            if (senderUserId == null || recipientUserId == null)
+            {
+                return NotFound("Sender or Recipient does not Exist!");
+            }
+
+            if (senderUserId.Wallet.Balance < amount)
+            {
+                return BadRequest("Insufficient funds!");
+            }
+
+            senderUserId.Wallet.Balance -= amount;
+            recipientUserId.Wallet.Balance += amount;
+
+            var transaction = new Transaction
+            {
+                SenderUserId = senderUserId.Id,
+                RecipientUserId = recipientUserId.Id,
+                Amount = amount,
+                DateOfTransfer = DateTime.UtcNow,
+                
+            };
+
+            await _unitOfWork.GetGenericRepository<Transaction>().AddEntityAsync(transaction);
+            await _unitOfWork.CommitAsync();
+
+            return Ok(transaction);
+        }
+
     }
 }
