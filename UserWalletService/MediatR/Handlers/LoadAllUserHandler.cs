@@ -2,16 +2,16 @@
 using MediatR;
 using RepositoryLayer.Repositories.Abstract;
 using RepositoryLayer.UnitOfWorks.Abstract;
-using UserWalletService.Queries;
+using UserWalletService.MediatR.Queries;
 
-namespace UserWalletService.Handlers
+namespace UserWalletService.MediatR.Handlers
 {
-    public class GetAllUserHandler : IRequestHandler<GetAllUsersQuery, IEnumerable<User>>
+    public class LoadAllUserHandler : IRequestHandler<GetAllUsersQuery, IEnumerable<User>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<User> _repository;
 
-        public GetAllUserHandler(IUnitOfWork unitOfWork)
+        public LoadAllUserHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _repository = _unitOfWork.GetGenericRepository<User>();

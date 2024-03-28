@@ -1,7 +1,7 @@
 ﻿using EntityLayer.Models;
 using MediatR;
 
-namespace UserWalletService.Queries
+namespace UserWalletService.MediatR.Queries
 {
     public class GetUserQuery : IRequest<User>
     {

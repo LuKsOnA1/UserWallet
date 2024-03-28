@@ -45,7 +45,6 @@ namespace RepositoryLayer.Repository.Concrete
             return await query.ToListAsync();
         }
 
-
         public async Task<T> GetEntityByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
@@ -73,11 +72,16 @@ namespace RepositoryLayer.Repository.Concrete
             return await query.FirstOrDefaultAsync();
         }
 
-
-
-        public void UpdateEntity(T entity)
+        public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
         {
-            _dbSet.Update(entity);
+            return _dbSet.Where(predicate);
         }
+
+        public void RemoveRange(IEnumerable<T> entity)
+        {
+            _dbSet.RemoveRange(entity);
+        }
+
+
     }
 }

@@ -2,9 +2,9 @@
 using MediatR;
 using RepositoryLayer.Repositories.Abstract;
 using RepositoryLayer.UnitOfWorks.Abstract;
-using UserWalletService.Commands;
+using UserWalletService.MediatR.Commands;
 
-namespace UserWalletService.Handlers
+namespace UserWalletService.MediatR.Handlers
 {
     public class CreateUserHandler : IRequestHandler<CreateUserRequest, User>
     {

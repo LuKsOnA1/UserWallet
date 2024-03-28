@@ -2,8 +2,8 @@
 using EntityLayer.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UserWalletService.Commands;
-using UserWalletService.Queries;
+using UserWalletService.MediatR.Commands;
+using UserWalletService.MediatR.Queries;
 
 namespace UserWalletService.Controllers
 {
@@ -62,7 +62,7 @@ namespace UserWalletService.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO model)
+        public async Task<ActionResult<User>> CreateUser([FromBody] UserDTO model)
         {
 
             var command = new CreateUserRequest(model);
@@ -108,7 +108,7 @@ namespace UserWalletService.Controllers
         {
             if (amount <= 1)
             {
-                return BadRequest("Minimu amount of transaction is 1");
+                return BadRequest("Minimum amount of transaction is 1");
             }
 
             var command = new TransferMoneyRequest(senderId, recipientId, amount);

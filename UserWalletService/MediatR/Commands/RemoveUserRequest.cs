@@ -1,7 +1,7 @@
 ﻿using EntityLayer.Models;
 using MediatR;
 
-namespace UserWalletService.Commands
+namespace UserWalletService.MediatR.Commands
 {
     public class RemoveUserRequest : IRequest<User>
     {

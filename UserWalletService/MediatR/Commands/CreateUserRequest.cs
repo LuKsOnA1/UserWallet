@@ -2,13 +2,13 @@
 using EntityLayer.Models;
 using MediatR;
 
-namespace UserWalletService.Commands
+namespace UserWalletService.MediatR.Commands
 {
     public class CreateUserRequest : IRequest<User>
     {
-        public CreateUserDTO _userRequest { get; }
+        public UserDTO _userRequest { get; }
 
-        public CreateUserRequest(CreateUserDTO userRequest)
+        public CreateUserRequest(UserDTO userRequest)
         {
             _userRequest = userRequest;
         }

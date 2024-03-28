@@ -1,7 +1,7 @@
 ﻿using EntityLayer.DTOs;
 using MediatR;
 
-namespace UserWalletService.Commands
+namespace UserWalletService.MediatR.Commands
 {
     public class TransferMoneyRequest : IRequest<TransferMoneyDTO>
     {

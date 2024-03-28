@@ -3,11 +3,11 @@ using EntityLayer.Models;
 using MediatR;
 using RepositoryLayer.Repositories.Abstract;
 using RepositoryLayer.UnitOfWorks.Abstract;
-using UserWalletService.Commands;
+using UserWalletService.MediatR.Commands;
 
-namespace UserWalletService.Handlers
+namespace UserWalletService.MediatR.Handlers
 {
-   
+
     public class TransferMoneyHandler : IRequestHandler<TransferMoneyRequest, TransferMoneyDTO>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +23,12 @@ namespace UserWalletService.Handlers
             var senderUserId = await _repository.GetIncludeAsync(filter: x => x.Id == request._senderId, includeProperties: "Wallet,Wallet.Transactions");
             var recipientUserId = await _repository.GetIncludeAsync(filter: x => x.Id == request._recipientId, includeProperties: "Wallet,Wallet.Transactions");
 
-            if(senderUserId == null || recipientUserId == null)
+            if (senderUserId == null || recipientUserId == null)
+            {
+                return null;
+            }
+
+            if (senderUserId == recipientUserId)
             {
                 return null;
             }

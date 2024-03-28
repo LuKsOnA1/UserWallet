@@ -1,6 +1,6 @@
 ﻿namespace EntityLayer.DTOs
 {
-    public class CreateUserDTO
+    public class UserDTO
     {
         public string Name { get; set; }
         public string Surname { get; set; }
