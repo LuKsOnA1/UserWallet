@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen();
 // Add RepositoryLayer Extension 
 builder.Services.LoadRepositoryLayer(builder.Configuration);
 
+// Add and Configure MediatR
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
 var app = builder.Build();
 
