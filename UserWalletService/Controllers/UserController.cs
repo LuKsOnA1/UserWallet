@@ -24,7 +24,8 @@ namespace UserWalletService.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAllUser()
         {
-            var users = _repository.GetAllEntity();
+            //var users = _repository.GetAllEntity();
+            var users = await _repository.GetAllIncluding(x => x.Wallet, x => x.Wallet.Transactions);
             return Ok(users);
         }
 
@@ -41,7 +42,7 @@ namespace UserWalletService.Controllers
                 return BadRequest("Invalid ID");
             }
 
-            var user = await _repository.GetEntityByIdAsync(id);
+            var user = await _repository.GetIncludeAsync(filter:  x => x.Id == id, includeProperties: "Wallet,Wallet.Transactions");
             if (user == null)
             {
                 return NotFound("User with given ID does not exist!");
@@ -54,6 +55,7 @@ namespace UserWalletService.Controllers
 
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO model)
         {
             var user = new User
@@ -69,6 +71,31 @@ namespace UserWalletService.Controllers
             await _unitOfWork.CommitAsync();
 
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+        }
+
+
+
+        [HttpDelete("{id:Guid}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RemoveUser(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Please Enter Valid ID");
+            }
+
+            var user = await _repository.GetEntityByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound("User Does Not Exist!");
+            }
+
+            _repository.DeleteEntity(user);
+            await _unitOfWork.CommitAsync();
+
+            return NoContent();
         }
 
 
